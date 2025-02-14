@@ -1,0 +1,34 @@
+services: # Containers to be used in Docker
+  web: # Unique Identifier ng container
+    container_name: app_shoemall # Name of the container
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    command: gunicorn ShoeMall.wsgi:application --bind 0.0.0.0:8000 --timeout 30 --reload
+    ports:
+      - 8000:8000
+    env_file:
+      - ./app/.env
+    volumes: # Persist or Sync data/files
+      - static_volume:/usr/src/app/staticfiles
+      - media_volume:/usr/src/app/mediafiles
+      - ./app/:/usr/src/app/
+    expose:
+      - 8000
+    depends_on:
+      - postgres
+  
+  postgres:
+    container_name: db_shoemall
+    image: postgres
+    env_file:
+      - ./app/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    expose:
+      - 5432
+
+volumes:
+  static_volume:
+  media_volume:
+  postgres_data:
