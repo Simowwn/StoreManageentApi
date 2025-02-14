@@ -13,6 +13,10 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
+    # http_method_names = ["post", "put"]
+
+    def get_queryset(self):
+        return super().get_queryset()
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
 

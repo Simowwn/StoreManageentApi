@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from user.models import Users
 # from user.models import Users  # Keep this if you still need Users
 
 # Create your models here.
@@ -8,6 +9,7 @@ class Stall(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     brand = models.CharField(max_length=255)
     type = models.CharField(max_length=255)  # This field should exist
+    owner = models.ForeignKey(Users, on_delete=models.CASCADE, related_name="stalls", null=True, blank=True)
     created_at = models.DateTimeField(auto_now=True)
     updated_at = models.DateTimeField(auto_now=True)
 
