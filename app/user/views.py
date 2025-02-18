@@ -24,6 +24,30 @@ class RegisterView(generics.CreateAPIView):
     def create(self, request, *args, **kwargs):
         data = request.data
 
+        first_name = data.get("first_name")
+        last_name = data.get("last_name")
+        password = data.get("password")
+
+        for i in first_name:
+            if i.isdigit():
+                return Response(
+                    {"message": "First name should not contain digits."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        for i in last_name:
+            if i.isdigit():
+                return Response(
+                    {"message": "Last name should not contain digits."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        if len(password) < 8:
+            return Response(
+                {"message": "Password should be at least 8 characters long."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         serializer = self.serializer_class(data=data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
