@@ -68,33 +68,33 @@ class RegisterView(generics.CreateAPIView):
 
 
 class LoginView(generics.GenericAPIView):
+    permission_classes = []
     serializer_class = LoginSerializer
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = authenticate(
-            email=serializer.validated_data["email"],
-            password=serializer.validated_data["password"],
-        )
+        validated_data = serializer.validated_data
 
-        if user is None:
+        email = validated_data["email"]
+        
+        try:
+            existing_user = Users.objects.get(email=email)
+
+            refresh = RefreshToken.for_user(existing_user)
             return Response(
-                {"error": "Invalid email or password"},
-                status=status.HTTP_401_UNAUTHORIZED,
+                {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                    "user": {
+                        "id": str(existing_user.id),
+                        "email": existing_user.email,
+                        "first_name": existing_user.first_name,
+                        "last_name": existing_user.last_name,
+                    },
+                }
             )
+        except Users.DoesNotExist:
+            return Response({"message": f"Account {email} does not exists yet."}, status=status.HTTP_200_OK)
 
-        refresh = RefreshToken.for_user(user)
-        return Response(
-            {
-                "refresh": str(refresh),
-                "access": str(refresh.access_token),
-                "user": {
-                    "id": str(user.id),
-                    "email": user.email,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                },
-            }
-        )

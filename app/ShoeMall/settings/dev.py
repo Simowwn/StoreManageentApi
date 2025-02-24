@@ -1,38 +1,29 @@
 from .base import *
 
-INSTALLED_APPS += []
-MIDDLEWARE += []
-
-CORS_URLS_REGEX = r"^/api/.*$"
-CORS_ORIGIN_ALLOW_ALL = True
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://localhost:8000",
-    "http://localhost:8001",
-]
+# Allow requests from frontend
+CORS_ALLOW_ALL_ORIGINS = True  # Only use this for development!
+CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
-    "http://localhost:8000",
-    "http://localhost:8001",
+    "http://127.0.0.1:5173",
 ]
 
-def main():
-    """Run administrative tasks."""
-    environment = os.environ.get("ENVIRONMENT", "DEV")
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
 
-    if environment == "PROD":
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sample_project.settings.prod")
-    else:
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sample_project.settings.dev")
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+    "x-csrftoken",
+    "accept",
+    "origin",
+    "user-agent",
+    "x-requested-with",
+]
 
-    try:
-        from django.core.management import execute_from_command_line
-    except ImportError as exc:
-        raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
-        ) from exc
-    execute_from_command_line(sys.argv)
+CORS_EXPOSE_HEADERS = ["Content-Type", "X-CSRFToken"]
+
+CORS_URLS_REGEX = r"^/api/.*$"  # Apply CORS only to API routes
