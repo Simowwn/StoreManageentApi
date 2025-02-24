@@ -92,6 +92,7 @@ class LoginView(generics.GenericAPIView):
                         "email": existing_user.email,
                         "first_name": existing_user.first_name,
                         "last_name": existing_user.last_name,
+                        "is_staff": existing_user.is_staff,
                     },
                 }
             )

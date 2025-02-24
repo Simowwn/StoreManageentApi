@@ -7,3 +7,4 @@ class StallSerializer(serializers.ModelSerializer):
         model = Stall
         fields = "__all__"
         read_only_fields = ["owner"]
+        depth = 1
