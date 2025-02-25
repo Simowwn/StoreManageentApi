@@ -27,6 +27,7 @@ class RegisterView(generics.CreateAPIView):
         first_name = data.get("first_name")
         last_name = data.get("last_name")
         password = data.get("password")
+        is_staff = data.get("is_staff", False)
 
         for i in first_name:
             if i.isdigit():
@@ -56,8 +57,9 @@ class RegisterView(generics.CreateAPIView):
         last_name = validated_data.get("last_name")
         email = validated_data.get("email")
         password = validated_data.get("password")
+        is_staff = validated_data.get("is_staff", False)
 
-        user = Users(first_name=first_name, last_name=last_name, email=email)
+        user = Users(first_name=first_name, last_name=last_name, email=email, is_staff=is_staff)
         user.set_password(password)
         user.save()
 
@@ -97,5 +99,5 @@ class LoginView(generics.GenericAPIView):
                 }
             )
         except Users.DoesNotExist:
-            return Response({"message": f"Account {email} does not exists yet."}, status=status.HTTP_200_OK)
+            return Response({"message": f"Account {email} does not exist yet."}, status=status.HTTP_200_OK)
 
